@@ -5,25 +5,32 @@ const client = axios.create({
   baseURL: "https://demoapi.com" 
 });
 
-const getLaptops = async (): Promise<AxiosResponse | null> => {
+const getClothes = async (): Promise<AxiosResponse | null> => {
   try {
-    const response = await client.get("/api/laptop");
+    const response = await client.get("/api/clothes");
     return response;
   } catch (error) {
     return (error as AxiosError).response || null;
   }
 };
 
-const Laptopschema = z.object({
-    brand: z.string(),
-    name: z.string(),
-    weight: z.number()
+const Clotheschema = z.object({
+  type: z.string(),
+  gender: z.string(),
+  products: z.object(
+    {
+      id: z.number(),
+      brand: z.string(),
+      color: z.string()
+    }
+  ).array(),
 });
 
-export type Laptops = z.infer<typeof Laptopschema>;
 
-const validateLaptops = (response: AxiosResponse): Laptops [] | null => {
-  const result = Laptopschema.array().safeParse(response.data);
+export type Clothes = z.infer<typeof Clotheschema>;
+
+const validateClothes = (response: AxiosResponse): Clothes [] | null => {
+  const result = Clotheschema.array().safeParse(response.data);
   if (!result.success) {
     console.log(result.error.issues);
     return null;
@@ -42,12 +49,12 @@ type Response<Type> =
       success: false;
     };
 
-export const loadLaptops = async (): Promise<Response<Laptops []>> => {
-  const response = await getLaptops();
+export const loadClothes = async (): Promise<Response<Clothes []>> => {
+  const response = await getClothes();
   if (!response) return { success: false, status: 0 };
   if (response.status !== 200)
     return { success: false, status: response.status };
-  const data = validateLaptops(response);
+  const data = validateClothes(response);
   if (!data) return { success: false, status: response.status };
   return { success: true, status: response.status, data };
 };
