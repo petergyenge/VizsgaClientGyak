@@ -4,6 +4,8 @@ import { loadClient } from './api/getClients'
 import { Clients } from './api/getClients'
 import { loadClothes } from './api/getClothes'
 import { Clothes } from './api/getClothes'
+import { postPet } from './api/postPet'
+import { Pet } from './api/postPet'
 function App() {
 
   const [error, setError] = useState("")
@@ -12,6 +14,7 @@ function App() {
   const [ClothesDatas, setClothesDatas] = useState<Clothes[] | null>()
   const [filteredClothesDatas, setfilteredClothesDatas] = useState<Clothes[] | null>()
   const [typeFilterValue, settypeFilterValue] = useState("")
+
 
 
 
@@ -83,6 +86,9 @@ function App() {
                 <p>{pet.animal}</p>
                 <p className='pr-3 pl-3'>{pet.name}</p>
                 {pet.isVaccinated ? <p>Be van oltava</p> : <p>Nincs van oltava</p>}
+                <button  className="btn btn-primary m-3"
+                onClick={() => {postPet(pet.name, !pet.isVaccinated)}}
+                >Módosítás</button>
               </div>
             </>
           ))}
